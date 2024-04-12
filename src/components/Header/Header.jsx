@@ -106,7 +106,7 @@ function HeaderCustom() {
                 <div className="flex items-center place-content-start gap-8 relative">
                     <Link
                         to={"my_course"}
-                        className="text-base text-white font-semibold">
+                        className="text-base text-white font-semibold text-nowrap">
                         Khoá học của tôi
                     </Link>
                     <Dropdown

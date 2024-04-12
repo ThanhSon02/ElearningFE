@@ -1,0 +1,9 @@
+.ant-checkbox-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.ant-checkbox-wrapper span:last-child {
+    display: block;
+    flex: 1;
+}
