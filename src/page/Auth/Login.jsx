@@ -67,7 +67,7 @@ function Login() {
                                 message: "Please input your Password!",
                             },
                         ]}>
-                        <Input
+                        <Input.Password
                             prefix={
                                 <LockOutlined className="site-form-item-icon" />
                             }
@@ -77,6 +77,7 @@ function Login() {
 
                     <Form.Item>
                         <Button
+                            htmlType="submit"
                             style={{
                                 width: "100%",
                                 backgroundColor: "#FCCF00",

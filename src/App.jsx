@@ -8,6 +8,7 @@ import Category from "./page/Category/Category";
 import Profile from "./page/Profile/Profile";
 import MyCourse from "./page/MyCourse/MyCourse";
 import CartPage from "./page/Cart/CartPage";
+
 function App() {
     return (
         <Routes>

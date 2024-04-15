@@ -38,6 +38,30 @@ function Register() {
                     name="register"
                     style={{ width: "100%" }}
                     onFinish={handleRegister}>
+                    <Flex justify="space-between">
+                        <Form.Item
+                            name="last_name"
+                            label="Họ"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Họ không được để trống!!",
+                                },
+                            ]}>
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="first_name"
+                            label="Tên"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Tên không được để trống!!",
+                                },
+                            ]}>
+                            <Input />
+                        </Form.Item>
+                    </Flex>
                     <Form.Item
                         name="email"
                         label="Email"

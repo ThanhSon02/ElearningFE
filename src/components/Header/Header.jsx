@@ -15,40 +15,51 @@ import {
     UserOutlined,
     LogoutOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Cart from "./../Cart/Cart";
-
-const items = [
-    {
-        key: "1",
-        label: (
-            <Link className="flex items-center gap-2 w-[140px]" to={"/profile"}>
-                <UserOutlined />
-                <span>Thông tin cá nhân</span>
-            </Link>
-        ),
-    },
-    {
-        key: "2",
-        label: (
-            <Link className="flex items-center gap-2 w-[140px]" to={"/prfile"}>
-                <LogoutOutlined className="text-red-600" />
-                <span className="text-red-600">Đăng xuất</span>
-            </Link>
-        ),
-    },
-];
-
-const nav = [
-    {
-        key: "1",
-        label: <Cart />,
-    },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { logOut } from "../../redux/Slice/authSlice";
 
 function HeaderCustom() {
-    const [isLogin, setIsLogin] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const handleLogOut = (navigate) => {
+        dispatch(logOut({ navigate }));
+    };
+    const items = [
+        {
+            key: "1",
+            label: (
+                <Link
+                    className="flex items-center gap-2 w-[140px]"
+                    to={"/profile"}>
+                    <UserOutlined />
+                    <span>Thông tin cá nhân</span>
+                </Link>
+            ),
+        },
+        {
+            key: "2",
+            label: (
+                <div
+                    onClick={() => handleLogOut(navigate)}
+                    className="flex items-center gap-2 w-[140px]">
+                    <LogoutOutlined className="text-red-600" />
+                    <span className="text-red-600">Đăng xuất</span>
+                </div>
+            ),
+        },
+    ];
+
+    const nav = [
+        {
+            key: "1",
+            label: <Cart />,
+        },
+    ];
+    const userLogin = useSelector((state) =>
+        state.auth.data?.user ? state.auth.data?.user : null
+    );
     return (
         <Header style={{ backgroundColor: "#212121" }}>
             <Flex
@@ -121,14 +132,15 @@ function HeaderCustom() {
                             </Badge>
                         </Link>
                     </Dropdown>
-                    {isLogin ? (
+                    {userLogin ? (
                         <Dropdown menu={{ items: items }} placement="bottom">
                             <Avatar
                                 style={{
                                     backgroundColor: "#fde3cf",
                                     color: "red",
                                 }}>
-                                TS
+                                {userLogin?.firstName[0] +
+                                    userLogin?.lastName[0]}
                             </Avatar>
                         </Dropdown>
                     ) : (

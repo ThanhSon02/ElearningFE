@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/axiosInstance";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 const initialState = {
-    user: null,
+    data: null,
     loading: false,
     error: null,
 };
@@ -16,6 +17,9 @@ export const loginUser = createAsyncThunk(
                 "/public/api/auth/login",
                 loginRequest
             );
+            Cookies.set("token", res.data?.data?.token);
+            navigate("/");
+            toast.success(res.data?.message);
             return res.data;
         } catch (error) {
             console.log(error);
@@ -33,17 +37,21 @@ export const registerUser = createAsyncThunk(
                 "/public/api/auth/register",
                 registerRequest
             );
-            if (200 == res.status) {
-                navigate("/login");
-                toast.success(res.data.message);
-                return res.data.data;
-            }
+            navigate("/login");
+            toast.success(res.data?.message);
+            return res.data.data;
         } catch (error) {
             toast.error(error.respose.data.message);
             return error.respose.data;
         }
     }
 );
+
+export const logOut = createAsyncThunk("auth/logout", ({ navigate }) => {
+    Cookies.remove("token");
+    navigate("/");
+    toast.success("Bạn đã đăng xuất!");
+});
 
 const authSlice = createSlice({
     name: "user",
@@ -56,12 +64,11 @@ const authSlice = createSlice({
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload;
+                state.data = action.payload?.data;
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action;
-                console.log(action);
+                state.error = action.payload;
             })
             .addCase(registerUser.pending, (state) => {
                 state.loading = true;
@@ -72,9 +79,16 @@ const authSlice = createSlice({
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+            })
+            .addCase(logOut.pending, (state) => {
+                state.loading = true;
+                state.message = null;
+            })
+            .addCase(logOut.fulfilled, (state) => {
+                state.loading = false;
+                state.data = null;
             });
     },
 });
 
-export const { updateAccessToken } = authSlice.actions;
 export default authSlice;

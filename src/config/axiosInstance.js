@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import axios from "axios";
 
-const instance = axios.create({
+const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_SERVER_URL,
     headers: {
         "Content-Type": "application/json",
@@ -10,4 +10,4 @@ const instance = axios.create({
     },
 });
 
-export default instance;
+export default axiosInstance;
