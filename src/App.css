@@ -1,3 +1,7 @@
+* {
+    scroll-behavior: smooth;
+}
+
 :where(.css-dev-only-do-not-override-1phg03q).ant-radio-button-wrapper:not(
         :first-child
     )::before {

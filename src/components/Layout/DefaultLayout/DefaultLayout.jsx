@@ -12,23 +12,21 @@ import axiosInstance from "../../../config/axiosInstance";
 
 function DefaultLayout() {
     const loading = useSelector((state) => state.auth.loading);
-    console.log(loading);
     const [spinning, setSpinning] = useState(loading);
-
     const [categories, setCategories] = useState(null);
 
     useEffect(() => {
         setSpinning(loading);
     }, [loading]);
 
-    useEffect(async () => {
-        try {
-            const res = await axiosInstance.get("/public/api/category/getAll");
-            setCategories(res.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }, []);
+    // useEffect(async () => {
+    //     try {
+    //         const res = await axiosInstance.get("/public/api/category/getAll");
+    //         setCategories(res.data);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }, []);
     return (
         <Layout style={{ minHeight: "100vh" }}>
             <HeaderCustom />

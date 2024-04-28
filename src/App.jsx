@@ -8,6 +8,9 @@ import Category from "./page/Category/Category";
 import Profile from "./page/Profile/Profile";
 import MyCourse from "./page/MyCourse/MyCourse";
 import CartPage from "./page/Cart/CartPage";
+import Detail from "./page/Detail/Detail";
+import ProtectedLayout from "./components/Layout/ProtectedLayout/ProtectedLayout";
+import LoginAdmin from "./page/Admin/LoginAdmin/LoginAdmin";
 
 function App() {
     return (
@@ -20,6 +23,10 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/my_course" element={<MyCourse />} />
                 <Route path="/cart" element={<CartPage />} />
+                <Route path="/detail/:id" element={<Detail />} />
+            </Route>
+            <Route element={<ProtectedLayout />}>
+                <Route path="/admin/auth/login" element={<LoginAdmin />} />
             </Route>
         </Routes>
     );
