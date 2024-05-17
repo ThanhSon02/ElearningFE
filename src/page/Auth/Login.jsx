@@ -9,7 +9,7 @@ function Login() {
     const navigate = useNavigate();
 
     const handleLogin = (loginRequest) => {
-        dispatch(loginUser({ loginRequest, navigate }));
+        dispatch(loginUser({ loginRequest, navigate, type: "1" }));
     };
 
     return (

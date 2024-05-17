@@ -9,8 +9,12 @@ import Profile from "./page/Profile/Profile";
 import MyCourse from "./page/MyCourse/MyCourse";
 import CartPage from "./page/Cart/CartPage";
 import Detail from "./page/Detail/Detail";
-import ProtectedLayout from "./components/Layout/ProtectedLayout/ProtectedLayout";
 import LoginAdmin from "./page/Admin/LoginAdmin/LoginAdmin";
+import AdminDashBoard from "./page/Admin/AdminDashBoard/AdminDashBoard";
+import AdminCourse from "./page/Admin/AdminCourse/AdminCourse";
+import AdminUser from "./page/Admin/AdminUser/AdminUser";
+import AdminCategory from "./page/Admin/AdminCategory/AdminCategory";
+import AdminProtectedLayout from "./components/Layout/ProtectedLayout/AdminProtectedLayout";
 
 function App() {
     return (
@@ -25,8 +29,12 @@ function App() {
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/detail/:id" element={<Detail />} />
             </Route>
-            <Route element={<ProtectedLayout />}>
-                <Route path="/admin/auth/login" element={<LoginAdmin />} />
+            <Route path="/admin/auth/login" element={<LoginAdmin />} />
+            <Route element={<AdminProtectedLayout />}>
+                <Route path="/admin/dashboard" element={<AdminDashBoard />} />
+                <Route path="/admin/course" element={<AdminCourse />} />
+                <Route path="/admin/user" element={<AdminUser />} />
+                <Route path="/admin/category" element={<AdminCategory />} />
             </Route>
         </Routes>
     );

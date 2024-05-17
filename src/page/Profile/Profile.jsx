@@ -1,16 +1,23 @@
 import { Tabs, Breadcrumb } from "antd";
 import ProfileContent from "../../components/ProfileContent/ProfileContent";
-const items = [
-    {
-        key: "1",
-        label: (
-            <span className="text-base font-semibold ">Thông tin cá nhân</span>
-        ),
-        children: <ProfileContent />,
-    },
-];
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
 function Profile() {
+    const userInfo = useSelector((state) => state.auth?.data?.user);
+
+    const items = [
+        {
+            key: "1",
+            label: (
+                <span className="text-base font-semibold ">
+                    Thông tin cá nhân
+                </span>
+            ),
+            children: <ProfileContent userInfo={userInfo} />,
+        },
+    ];
+
     return (
         <div className="w-full">
             <Breadcrumb className="mt-3">

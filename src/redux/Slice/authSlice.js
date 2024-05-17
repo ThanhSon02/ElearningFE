@@ -11,14 +11,19 @@ const initialState = {
 
 export const loginUser = createAsyncThunk(
     "auth/login",
-    async ({ loginRequest, navigate }) => {
+    async ({ loginRequest, navigate, type }) => {
         try {
             const res = await axiosInstance.post(
                 "/public/api/auth/login",
                 loginRequest
             );
             Cookies.set("token", res.data?.data?.token);
-            navigate("/");
+            if (type === "1") {
+                navigate("/");
+            } else {
+                navigate("/admin/dashboard");
+            }
+
             toast.success(res.data?.message);
             return res.data;
         } catch (error) {
@@ -49,6 +54,7 @@ export const registerUser = createAsyncThunk(
 
 export const logOut = createAsyncThunk("auth/logout", ({ navigate }) => {
     Cookies.remove("token");
+    // window.localStorage.removeItem("persist:elearning");
     navigate("/");
     toast.success("Bạn đã đăng xuất!");
 });

@@ -19,6 +19,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Cart from "./../Cart/Cart";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../redux/Slice/authSlice";
+import { useEffect } from "react";
+import { getAllCategory } from "../../redux/Slice/categorySlice";
 
 function HeaderCustom() {
     const dispatch = useDispatch();
@@ -26,6 +28,13 @@ function HeaderCustom() {
     const handleLogOut = (navigate) => {
         dispatch(logOut({ navigate }));
     };
+
+    useEffect(() => {
+        dispatch(getAllCategory());
+    }, []);
+
+    const categories = useSelector((state) => state.category.data);
+
     const items = [
         {
             key: "1",

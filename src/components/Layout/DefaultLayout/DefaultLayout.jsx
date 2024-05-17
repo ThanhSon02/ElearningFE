@@ -43,7 +43,19 @@ function DefaultLayout() {
             </Content>
             <FooterCustom />
             <Spin spinning={spinning} fullscreen />
-            <ToastContainer />
+            <ToastContainer
+                position="bottom-left"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition:Bounce
+            />
         </Layout>
     );
 }
