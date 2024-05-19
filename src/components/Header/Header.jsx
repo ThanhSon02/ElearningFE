@@ -148,8 +148,8 @@ function HeaderCustom() {
                                     backgroundColor: "#fde3cf",
                                     color: "red",
                                 }}>
-                                {userLogin?.firstName[0] +
-                                    userLogin?.lastName[0]}
+                                {userLogin?.name.split(" ")[0][0] +
+                                    userLogin?.name.split(" ")[1][0]}
                             </Avatar>
                         </Dropdown>
                     ) : (

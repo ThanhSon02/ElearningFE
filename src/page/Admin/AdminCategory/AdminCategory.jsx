@@ -6,7 +6,6 @@ function AdminCategory() {
     const dispatch = useDispatch();
     const accessToken = useSelector((state) => state.auth?.data?.token);
     const handleAddCategory = (categoryInfo) => {
-        console.log(categoryInfo, accessToken);
         dispatch(addCategory({ categoryInfo, accessToken }));
     };
 

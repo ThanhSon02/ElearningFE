@@ -12,6 +12,9 @@ import {
 } from "antd";
 import { useRef, useState } from "react";
 import ProfileModal from "../../page/Profile/ProfileModal/ProfileModal";
+import { useDispatch, useSelector } from "react-redux";
+import axiosInstance from "../../config/axiosInstance";
+import { toast } from "react-toastify";
 function ProfileContent({ userInfo }) {
     const data = {
         name: `${userInfo?.firstName}  ${userInfo?.lastName}`,
@@ -19,6 +22,8 @@ function ProfileContent({ userInfo }) {
         phone: userInfo?.phone,
         dateOfBirth: userInfo?.dateOfBirth,
     };
+
+    const loading = useSelector((state) => state.auth?.loading);
 
     const [changePasswordModal, setChangePasswordModal] = useState(false);
     const [confirmChange, setConfirmChange] = useState(false);
@@ -39,25 +44,60 @@ function ProfileContent({ userInfo }) {
         setConfirmChange(false);
     };
 
-    const [form] = Form.useForm();
-    const [form1] = Form.useForm();
-    const formRef = useRef();
+    const [formChangePass] = Form.useForm();
+    const [formCheckPass] = Form.useForm();
+    const [formChangeInfo] = Form.useForm();
+    const formChangePassRef = useRef();
     const handleFormChange = () => {
-        const fields = form1.getFieldsValue([
+        const fields = formChangeInfo.getFieldsValue([
             "name",
             "email",
             "phone",
             "dateOfBirth",
         ]);
-        console.log(JSON.stringify(data) === JSON.stringify(fields));
         JSON.stringify(data) === JSON.stringify(fields)
             ? setDisabledSave(true)
             : setDisabledSave(false);
     };
 
-    const handleChangeInfo = (changeInfo) => {
-        console.log(changeInfo);
+    const handleChangePassword = () => {
+        formChangePassRef.current.submit();
+        if (!loading) {
+            hideChangePasswordModal();
+        }
     };
+    const userId = useSelector((state) => state.auth?.data?.user?.id);
+    const accessToken = useSelector((state) => state.auth?.data?.token);
+    const dispatch = useDispatch();
+    const handleCheckPass = async (pass) => {
+        try {
+            const res = await axiosInstance.post(
+                "/api/user/check_password",
+                { ...pass, id: userId },
+                {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                }
+            );
+            if (res.data?.data?.checkPass) {
+                formChangeInfo.submit();
+                formCheckPass.resetFields();
+                hideConfirmChange();
+            } else {
+                toast.error(res.data?.message);
+            }
+        } catch (error) {
+            toast.error(error.response.data?.message);
+        }
+    };
+
+    const handleChangeInfo = (dataChange) => {
+        console.log(dataChange);
+        // if (!loading) {
+        //     hideConfirmChange();
+        // }
+        // formChangeInfo.submit;
+    };
+
     return (
         <ConfigProvider
             theme={{
@@ -76,8 +116,9 @@ function ProfileContent({ userInfo }) {
             <Form
                 initialValues={data}
                 onFieldsChange={handleFormChange}
-                form={form1}
                 layout="vertical"
+                onFinish={handleChangeInfo}
+                form={formChangeInfo}
                 className="w-full flex flex-col items-center bg-white rounded py-5">
                 <Row gutter={120} className="w-full" justify={"center"}>
                     <Col span={12}>
@@ -136,9 +177,21 @@ function ProfileContent({ userInfo }) {
                 title="Bạn có muốn thay đổi thông tin?"
                 open={confirmChange}
                 onOk={hideConfirmChange}
-                onCancel={hideConfirmChange}>
-                <Form>
-                    <Form.Item label="Nhập mật khẩu của bạn">
+                onCancel={hideConfirmChange}
+                footer={[
+                    <Button key={"cancel"} onClick={hideConfirmChange}>
+                        Huỷ
+                    </Button>,
+                    <Button
+                        key={"update"}
+                        type="primary"
+                        className=" bg-sky-500 text-white hover:opacity-90"
+                        onClick={formCheckPass.submit}>
+                        Cập nhật
+                    </Button>,
+                ]}>
+                <Form onFinish={handleCheckPass} form={formCheckPass}>
+                    <Form.Item label="Nhập mật khẩu của bạn" name="password">
                         <Input.Password />
                     </Form.Item>
                 </Form>
@@ -151,11 +204,14 @@ function ProfileContent({ userInfo }) {
                     <Button key="cancel" onClick={hideChangePasswordModal}>
                         Huỷ
                     </Button>,
-                    <Button key="submit" onClick={form.submit}>
+                    <Button key="submit" onClick={handleChangePassword}>
                         Thay đổi
                     </Button>,
                 ]}>
-                <ProfileModal form={form} formRef={formRef} />
+                <ProfileModal
+                    form={formChangePass}
+                    formRef={formChangePassRef}
+                />
             </Modal>
         </ConfigProvider>
     );

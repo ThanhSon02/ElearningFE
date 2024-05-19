@@ -23,13 +23,11 @@ export const loginUser = createAsyncThunk(
             } else {
                 navigate("/admin/dashboard");
             }
-
             toast.success(res.data?.message);
             return res.data;
         } catch (error) {
-            console.log(error);
-            toast.error(error.respose?.data?.message);
-            return error.respose?.data;
+            toast.error(error.response?.data?.message);
+            return error.response?.data;
         }
     }
 );
@@ -46,15 +44,33 @@ export const registerUser = createAsyncThunk(
             toast.success(res.data?.message);
             return res.data.data;
         } catch (error) {
-            toast.error(error.respose.data.message);
-            return error.respose.data;
+            toast.error(error.response.data.message);
+            return error.response.data;
+        }
+    }
+);
+
+export const changePassword = createAsyncThunk(
+    "user/changePassword",
+    async ({ dataChange, accessToken }) => {
+        try {
+            const res = await axiosInstance.post(
+                "/api/user/password",
+                dataChange,
+                {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                }
+            );
+            toast.success(res.data?.message);
+        } catch (error) {
+            toast.error(error.response.data?.message);
+            return error.response.data;
         }
     }
 );
 
 export const logOut = createAsyncThunk("auth/logout", ({ navigate }) => {
     Cookies.remove("token");
-    // window.localStorage.removeItem("persist:elearning");
     navigate("/");
     toast.success("Bạn đã đăng xuất!");
 });
@@ -93,6 +109,12 @@ const authSlice = createSlice({
             .addCase(logOut.fulfilled, (state) => {
                 state.loading = false;
                 state.data = null;
+            })
+            .addCase(changePassword.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(changePassword.fulfilled, (state) => {
+                state.loading = false;
             });
     },
 });

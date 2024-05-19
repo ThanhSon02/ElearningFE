@@ -1,8 +1,16 @@
+/* eslint-disable react/prop-types */
 import { ConfigProvider, Form, Input } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { changePassword } from "../../../redux/Slice/authSlice";
 
 function ProfileModal({ form, formRef }) {
+    const dispatch = useDispatch();
+    const accessToken = useSelector((state) => state.auth?.data?.token);
+    const email = useSelector((state) => state.auth?.data?.user?.email);
     const handleChangePassword = (dataChange) => {
-        console.log(dataChange);
+        dataChange = { email: email, ...dataChange };
+        dispatch(changePassword({ dataChange, accessToken }));
+        form.resetFields();
     };
 
     return (

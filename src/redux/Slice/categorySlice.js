@@ -18,8 +18,8 @@ export const getAllCategory = createAsyncThunk(
             return res.data;
         } catch (error) {
             console.log(error);
-            toast.error(error.respose?.data?.message);
-            return error.respose?.data;
+            toast.error(error.response?.data?.message);
+            return error.response?.data;
         }
     }
 );
@@ -39,8 +39,8 @@ export const addCategory = createAsyncThunk(
             return res.data;
         } catch (error) {
             console.log(error);
-            toast.error(error.respose?.data?.message);
-            return error.respose?.data;
+            toast.error(error.response?.data?.message);
+            return error.response?.data;
         }
     }
 );
@@ -57,8 +57,8 @@ export const deleteCategory = createAsyncThunk(
             toast.success(res.data?.message);
             return res.data.data;
         } catch (error) {
-            toast.error(error.respose.data.message);
-            return error.respose.data;
+            toast.error(error.response.data.message);
+            return error.response.data;
         }
     }
 );
