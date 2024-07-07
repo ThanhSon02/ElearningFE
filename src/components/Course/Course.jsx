@@ -1,39 +1,58 @@
 /* eslint-disable react/prop-types */
 
-import { Card } from "antd";
+import { useDispatch } from "react-redux";
 import { ConvertPriceString } from "../../utils/ConvertPriceString";
+import { useNavigate } from "react-router-dom";
+import { getCourseById } from "../../redux/Slice/appSlice";
 
-/* eslint-disable no-unused-vars */
-
-function Course({ course_data }) {
+function Course({ courseData }) {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    console.log(courseData);
     return (
-        <Card
-            hoverable
-            cover={<img src={course_data?.img} />}
-            className="w-[260px]">
-            <div className="w-full">
-                <h3 className="uppercase font-bold text-amber-500">
-                    {course_data?.category}
-                </h3>
-                <h2 className="font-semibold text-blue-900 text-xl">
-                    {course_data?.course_name}
-                </h2>
-                <div>
-                    <p className="truncate text-gray-500 font-medium text-sm">
-                        {course_data?.description}
-                    </p>
-                    <div className="text-black font-semibold">
-                        {course_data?.author}
+        <div
+            onClick={() => {
+                dispatch(getCourseById({ id: courseData?.id }));
+                navigate(`/detail/${courseData?.id}`);
+            }}
+            // to={`/detail/${courseData?.id}`}
+            // state={courseData?.id}
+            className="w-full px-3 h-[304px] cursor-pointer">
+            <div className="shadow-md rounded-lg overflow-hidden min-h-full hover:shadow-xl">
+                <div className="h-[140px] border-b-[1px]">
+                    <img
+                        src={courseData?.imageLink}
+                        className="w-full object-cover h-full"
+                        alt="logo"
+                    />
+                </div>
+                <div className="px-3 pb-3 min-h-[160px] flex flex-col justify-around">
+                    <h3 className="uppercase mt-2 font-medium text-amber-600">
+                        {courseData?.categoryName}
+                    </h3>
+                    <h2 className="font-semibold text-base truncate">
+                        {courseData?.courseName}
+                    </h2>
+                    <div>
+                        <span>Giáo viên: </span>
+                        <span className="text-sky-500">
+                            {courseData?.teacherName}
+                        </span>
                     </div>
-                    <div className="flex gap-2 font-bold text-xl">
-                        <p className="text-red-600 text line-through">
-                            {ConvertPriceString(course_data?.sale_price)}đ
-                        </p>
-                        <p>{ConvertPriceString(course_data?.price)}đ</p>
+                    <div className="">
+                        <span className="text-xl font-medium text-red-600">
+                            {ConvertPriceString(courseData?.salePrice)}đ
+                        </span>
+                        <div className="flex gap-2 text-base font-normal">
+                            <span className="">-50%</span>
+                            <span className="line-through text-stone-400">
+                                {ConvertPriceString(courseData?.price)}đ
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </Card>
+        </div>
     );
 }
 

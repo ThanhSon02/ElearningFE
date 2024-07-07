@@ -26,8 +26,11 @@ export const loginUser = createAsyncThunk(
             toast.success(res.data?.message);
             return res.data;
         } catch (error) {
-            toast.error(error.response?.data?.message);
-            return error.response?.data;
+            toast.error(
+                error.response?.data?.access_denied_reason
+                    ? error.response?.data?.access_denied_reason
+                    : error.response?.data?.message
+            );
         }
     }
 );
@@ -44,8 +47,11 @@ export const registerUser = createAsyncThunk(
             toast.success(res.data?.message);
             return res.data.data;
         } catch (error) {
-            toast.error(error.response.data.message);
-            return error.response.data;
+            toast.error(
+                error.response?.data?.access_denied_reason
+                    ? error.response?.data?.access_denied_reason
+                    : error.response?.data?.message
+            );
         }
     }
 );
@@ -63,8 +69,30 @@ export const changePassword = createAsyncThunk(
             );
             toast.success(res.data?.message);
         } catch (error) {
-            toast.error(error.response.data?.message);
-            return error.response.data;
+            toast.error(
+                error.response?.data?.access_denied_reason
+                    ? error.response?.data?.access_denied_reason
+                    : error.response?.data?.message
+            );
+        }
+    }
+);
+
+export const updateUserInfo = createAsyncThunk(
+    "user/updateInfo",
+    async ({ userInfo, accessToken }) => {
+        try {
+            const res = await axiosInstance.put("/api/user/update", userInfo, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+            toast.success(res.data?.message);
+            return res.data;
+        } catch (error) {
+            toast.error(
+                error.response?.data?.access_denied_reason
+                    ? error.response?.data?.access_denied_reason
+                    : error.response?.data?.message
+            );
         }
     }
 );
@@ -115,6 +143,13 @@ const authSlice = createSlice({
             })
             .addCase(changePassword.fulfilled, (state) => {
                 state.loading = false;
+            })
+            .addCase(updateUserInfo.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(updateUserInfo.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = { user: action.payload?.data, ...state.data };
             });
     },
 });

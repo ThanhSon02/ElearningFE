@@ -14,7 +14,16 @@ import AdminDashBoard from "./page/Admin/AdminDashBoard/AdminDashBoard";
 import AdminCourse from "./page/Admin/AdminCourse/AdminCourse";
 import AdminUser from "./page/Admin/AdminUser/AdminUser";
 import AdminCategory from "./page/Admin/AdminCategory/AdminCategory";
-import AdminProtectedLayout from "./components/Layout/ProtectedLayout/AdminProtectedLayout";
+import AdminProtectedLayout from "./components/Layout/AdminProtectedLayout/AdminProtectedLayout";
+import ProtectedLayout from "./components/Layout/ProtectedLayout/ProtectedLayout";
+import Payment from "./page/Payment/Payment";
+import AdminCreateCourse from "./page/Admin/AdminCourse/AdminCreateCourse";
+import AdminSection from "./page/Admin/AdminSection/AdminSection";
+import AdminLecture from "./page/Admin/AdminLecture/AdminLecture";
+import AdminOrder from "./page/Admin/AdminOrder/AdminOrder";
+import Learning from "./page/Learning/Learning";
+import AdminUpdateCourse from "./page/Admin/AdminCourse/AdminUpdateCourse";
+import PaymentResult from "./page/PaymentResult/PaymentResult";
 
 function App() {
     return (
@@ -23,18 +32,35 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/category" element={<Category />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/my_course" element={<MyCourse />} />
+                {/* <Route path="/category" element={<Category />} /> */}
+                <Route path="/category/:id" element={<Category />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/detail/:id" element={<Detail />} />
+                <Route path="/learning/:id" element={<Learning />} />
+            </Route>
+            <Route element={<ProtectedLayout />}>
+                <Route path="/my_course" element={<MyCourse />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/payment" element={<Payment />} />
+                <Route path="/payment/result" element={<PaymentResult />} />
             </Route>
             <Route path="/admin/auth/login" element={<LoginAdmin />} />
             <Route element={<AdminProtectedLayout />}>
-                <Route path="/admin/dashboard" element={<AdminDashBoard />} />
-                <Route path="/admin/course" element={<AdminCourse />} />
+                <Route
+                    index
+                    path="/admin/dashboard"
+                    element={<AdminDashBoard />}
+                />
+                <Route path="/admin/course">
+                    <Route index element={<AdminCourse />} />
+                    <Route path="create" element={<AdminCreateCourse />} />
+                    <Route path="update/:id" element={<AdminUpdateCourse />} />
+                </Route>
+                <Route path="/admin/section" element={<AdminSection />} />
+                <Route path="/admin/lecture" element={<AdminLecture />} />
                 <Route path="/admin/user" element={<AdminUser />} />
                 <Route path="/admin/category" element={<AdminCategory />} />
+                <Route path="/admin/order" element={<AdminOrder />} />
             </Route>
         </Routes>
     );

@@ -3,7 +3,10 @@ import persistReducer from "redux-persist/es/persistReducer";
 import persistStore from "redux-persist/es/persistStore";
 import storage from "redux-persist/lib/storage";
 import authSlice from "./Slice/authSlice";
-import categorySlice from "./Slice/categorySlice";
+import adminSlice from "./Slice/adminSlice";
+import appSlice from "./Slice/appSlice";
+import cartSlice from "./Slice/cartSlice";
+import orderSlice from "./Slice/orderSlice";
 
 const persistConfig = {
     key: "elearning",
@@ -13,7 +16,10 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     auth: authSlice.reducer,
-    category: categorySlice.reducer,
+    admin: adminSlice.reducer,
+    cart: cartSlice.reducer,
+    app: appSlice.reducer,
+    order: orderSlice.reducer,
 }); // create or combine reducer
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -1,46 +1,57 @@
-import { Link } from "react-router-dom";
-import { Card, Progress } from "antd";
-function CourseProgress({
-    // eslint-disable-next-line react/prop-types
-    course_data = {
-        id: 1,
-        img: "/public/543600_64d1_4.jpg",
-        category: "Lập trình - CNTT 1",
-        course_name: "Java Basics 1",
-        description:
-            "Python là một ngôn ngữ lập trình bậc cao cho các mục đích lập trình đa năng. Python được thiết kế với ưu điểm mạnh là dễ đọc, dễ học và dễ nhớ. Python là ngôn ngữ có hình thức rất sáng sủa, cấu trúc rõ ràng, thuận tiện cho người mới học lập trình và là ngôn ngữ lập trình dễ học. Cấu trúc của Python còn cho phép người sử dụng viết mã lệnh với số lần gõ phím tối thiểu. Python vì vậy được dùng rộng rãi trong cộng đồng khoa học dữ liệu và đặc biệt là trong học máy và phát triển trí tuệ nhân tạo. Đến với khóa học này, các bạn sẽ được trang bị những kiến thức, kỹ năng và phương pháp lập trình sử dụng các tính năng cốt lõi của Python như cú pháp câu lệnh, biến và các kiểu dữ liệu cơ bản, vòng lặp, hàm dựng sẵn và nhiều tính năng khác. Đồng thời, các bạn sẽ tự tay viết và chạy chương trình của chính mình bằng những công cụ lập trình Python chuyên nghiệp như PyCharm và Google Colab.",
-        author: "Trần Thanh Sơn",
-        price: 399999,
-        sale_price: 199999,
-    },
-}) {
+/* eslint-disable react/prop-types */
+import { useNavigate } from "react-router-dom";
+import { Progress } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { getCourseErollById } from "../../redux/Slice/appSlice";
+function CourseProgress({ data }) {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const userInfo = useSelector((state) => state.auth?.data?.user);
+    const accessToken = useSelector((state) => state.auth?.data?.token);
     return (
-        <Link>
-            <Card
-                hoverable
-                cover={<img src={course_data?.img} />}
-                className="w-[300px]">
-                <div className="w-full">
-                    <h3 className="uppercase font-bold text-amber-500">
-                        {course_data?.category}
+        <div
+            onClick={() => {
+                dispatch(
+                    getCourseErollById({
+                        userId: userInfo?.id,
+                        courseId: data?.id,
+                        accessToken,
+                    })
+                );
+                navigate(`/learning/${data?.id}`);
+            }}
+            className="w-full px-3 min-h-fit cursor-pointer">
+            <div className="shadow-md rounded-lg overflow-hidden min-h-fit hover:shadow-xl">
+                <div className="h-[140px] border-b-[1px]">
+                    <img
+                        src={data?.imageLink}
+                        className="w-full object-cover h-full"
+                        alt="logo"
+                        sizes=""
+                    />
+                </div>
+                <div className="px-3 pb-3 min-h-[160px] flex flex-col justify-around">
+                    <h3 className="uppercase mt-2 font-medium text-amber-600">
+                        {data?.categoryName}
                     </h3>
-                    <h2 className="font-semibold text-blue-900 text-xl">
-                        {course_data?.course_name}
+                    <h2 className="font-semibold text-base truncate">
+                        {data?.courseName}
                     </h2>
                     <div>
-                        <p className="truncate text-gray-500 font-medium text-sm">
-                            {course_data?.description}
-                        </p>
-                        <div className="text-black font-semibold">
-                            {course_data?.author}
-                        </div>
-                        <div className="flex gap-2 font-bold text-xl">
-                            <Progress percent={30} strokeColor={"green"} />
-                        </div>
+                        <span>Giáo viên: </span>
+                        <span className="text-sky-500">
+                            {data?.teacherName}
+                        </span>
+                    </div>
+                    <div className="flex gap-2 font-bold text-xl">
+                        <Progress
+                            percent={data.progress}
+                            strokeColor={"green"}
+                        />
                     </div>
                 </div>
-            </Card>
-        </Link>
+            </div>
+        </div>
     );
 }
 

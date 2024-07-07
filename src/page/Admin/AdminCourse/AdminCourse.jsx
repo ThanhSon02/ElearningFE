@@ -1,41 +1,77 @@
-import {
-    Button,
-    ConfigProvider,
-    Drawer,
-    Form,
-    Input,
-    Modal,
-    Space,
-    Table,
-} from "antd";
+/* eslint-disable no-unused-vars */
+import { Button, ConfigProvider, Input, Popconfirm, Space, Table } from "antd";
 import {
     EditOutlined,
     DeleteOutlined,
-    PlusOutlined,
     SearchOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { useRef, useState } from "react";
-import AdminCourseModal from "../../../components/Admin/AdminModal/AdminCourseModal";
+import { useEffect, useState } from "react";
+import {
+    deleteCourse,
+    getAllCourseAdmin,
+} from "../../../redux/Slice/adminSlice";
+import { ConvertPriceString } from "../../../utils/ConvertPriceString";
+import { Link, useNavigate } from "react-router-dom";
 function AdminCourse() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const allCourse = useSelector((state) =>
+        state.admin.data?.courseData != null ? state.admin.data?.courseData : []
+    );
+    const accessToken = useSelector(
+        (state) => state.admin?.data?.loginData?.token
+    );
+
+    useEffect(() => {
+        dispatch(getAllCourseAdmin({ navigate }));
+    }, []);
+
+    const [rowSelected, setRowSelected] = useState("");
+    const [dataSource, setDataSource] = useState(null);
+
+    const handleDeleteCourse = () => {
+        dispatch(
+            deleteCourse({ courseId: rowSelected.id, navigate, accessToken })
+        );
+    };
+
     const columns = [
         {
+            title: "STT",
+            dataIndex: "stt",
+            key: "stt",
+            width: "5%",
+            render: (_, record, index) => <span>{++index}</span>,
+        },
+        {
             title: "Tên khoá học",
-            key: "course_name",
-            dataIndex: "course_name",
+            key: "courseName",
+            dataIndex: "courseName",
+            width: "30%",
+            sorter: (a, b) => a.courseName.localeCompare(b.courseName),
         },
         {
             title: "Danh mục",
             key: "category",
             dataIndex: "category",
+            width: "15%",
+            render: (_, record) => <span>{record?.categoryName}</span>,
+            sorter: (a, b) => a.categoryName.length - b.categoryName.length,
         },
         {
             title: "Ảnh",
-            key: "course_img",
-            dataIndex: "course_img",
+            key: "imageLink",
+            dataIndex: "imageLink",
             render: (_, record) => (
-                <img width={32} height={48} src={record.course_img} />
+                <div className="border-[1px]">
+                    <img
+                        src={record.imageLink}
+                        className="w-full object-contain"
+                    />
+                </div>
             ),
+            width: "10%",
         },
         {
             title: "Giá",
@@ -43,91 +79,89 @@ function AdminCourse() {
             dataIndex: "price",
             render: (_, record) => (
                 <span style={{ color: "green", fontWeight: 500 }}>
-                    {record.price}
-                    <span>đ</span>
+                    {ConvertPriceString(record.price)}
+                    <span>(đ)</span>
                 </span>
             ),
+            sorter: (a, b) => a.price - b.price,
+            width: "15%",
         },
         {
-            title: "Giảm giá",
-            key: "discount",
-            dataIndex: "discount",
+            title: "Giá sau khi giảm",
+            key: "salePrice",
+            dataIndex: "salePrice",
             render: (_, record) => (
                 <span style={{ color: "green", fontWeight: 500 }}>
-                    {record.discount}
-                    <span>%</span>
+                    {ConvertPriceString(record.salePrice)}
+                    <span>(đ)</span>
                 </span>
             ),
-        },
-        {
-            title: "Số người đăng ký",
-            dataIndex: "joined",
-            key: "joined",
-            render: (_, record) => (
-                <span style={{ color: "crimson", fontWeight: 500 }}>
-                    {record.joind}
-                </span>
-            ),
+            sorter: (a, b) => a.salePrice - b.salePrice,
+            width: "15%",
         },
         {
             title: "Tuỳ chọn",
             key: "option",
-            render: () => (
+            render: (_, record) => (
                 <Space size="middle">
-                    <a className="update-book-btn" onClick={() => {}}>
-                        <EditOutlined />
-                    </a>
-                    <a className="delete-book-btn" onClick={() => {}}>
-                        <DeleteOutlined />
-                    </a>
+                    <Link
+                        className="update-book-btn text-blue-600"
+                        to={`/admin/course/update/${record.id}`}
+                        state={record}>
+                        <Button icon={<EditOutlined />} />
+                    </Link>
+                    <Popconfirm
+                        title="Xoá khoá học này"
+                        description="Bạn có chắc là muốn xoá khoá học này?"
+                        onConfirm={handleDeleteCourse}
+                        okText="Xác nhận"
+                        cancelText="Huỷ">
+                        <Button
+                            className="text-red-600 border-red-600 hover:text-red-400"
+                            icon={<DeleteOutlined />}
+                        />
+                    </Popconfirm>
                 </Space>
             ),
         },
     ];
-    const dispatch = useDispatch();
-    // const data = useSelector((state) => state.books.bookList);
-
-    const [rowSelected, setRowSelected] = useState("");
-    const [openDelete, setOpenDelete] = useState(false);
-    const [insertDrawer, setInsertDrawer] = useState(false);
-    const [openUpdate, setOpenUpdate] = useState(false);
-
-    const [form] = Form.useForm();
-
-    const openInsertDrawer = () => {
-        setInsertDrawer(true);
-    };
-
-    const hideInsertDrawer = () => {
-        setInsertDrawer(false);
-    };
-
-    const createFormRef = useRef();
-    const updateFormRef = useRef();
 
     return (
         <ConfigProvider>
-            <div className="flex flex-col w-full bg-white px-5">
+            <div className="flex flex-col w-full bg-white px-5 shadow-lg">
                 <div className="bg-white flex py-5 justify-between items-center">
-                    <Input
-                        className="w-[230px]"
-                        prefix={
-                            <SearchOutlined className="site-form-item-icon" />
-                        }
-                        placeholder="Tìm kiếm khoá học"
-                    />
+                    <h1 className="font-medium text-lg mb-3">
+                        Quản lý khoá học
+                    </h1>
                     <div className="flex justify-center items-center">
-                        <Button
-                            onClick={openInsertDrawer}
+                        <Link
+                            to={"/admin/course/create"}
                             className="flex justify-center items-center">
-                            <PlusOutlined />
-                        </Button>
+                            <Button type="primary">Thêm khoá học</Button>
+                        </Link>
                     </div>
                 </div>
+                <div className="w-1/5">
+                    <Input
+                        onChange={(e) => {
+                            const filteredData = allCourse.filter((entry) =>
+                                entry.courseName
+                                    .toLowerCase()
+                                    .includes(e.target.value.toLowerCase())
+                            );
+                            setDataSource(filteredData);
+                        }}
+                        placeholder="Tìm kiếm khoá học"
+                        suffix={<SearchOutlined />}
+                    />
+                </div>
                 <Table
-                    style={{ width: "100%" }}
+                    style={{ width: "100%", marginTop: 12 }}
                     columns={columns}
-                    // dataSource={}
+                    dataSource={dataSource != null ? dataSource : allCourse}
+                    scroll={{
+                        y: 440,
+                    }}
                     onRow={(record) => {
                         return {
                             onClick: () => {
@@ -136,50 +170,6 @@ function AdminCourse() {
                         };
                     }}
                 />
-                <Modal
-                    okText="Xoá"
-                    cancelText="Huỷ"
-                    open={openDelete}
-                    onOk={() => {}}
-                    onCancel={() => {}}>
-                    <h3>Bạn có chắc muốn xoá sản phẩm này?</h3>
-                </Modal>
-                <Drawer
-                    width={900}
-                    title="Thêm khoá học"
-                    open={insertDrawer}
-                    onClose={hideInsertDrawer}
-                    extra={
-                        <Space>
-                            <Button onClick={hideInsertDrawer}>Cancel</Button>
-                            <Button onClick={form.submit} type="primary">
-                                Submit
-                            </Button>
-                        </Space>
-                    }>
-                    <AdminCourseModal form={form} formRef={createFormRef} />
-                </Drawer>
-                <Modal
-                    title="Chỉnh sửa sản phẩm"
-                    open={openUpdate}
-                    onCancel={() => {}}
-                    footer={[
-                        <Button key={"cancel"} onClick={() => {}}>
-                            Huỷ
-                        </Button>,
-                        <Button
-                            key={"update"}
-                            type="primary"
-                            onClick={() => {}}>
-                            Cập nhật
-                        </Button>,
-                    ]}>
-                    {/* <AdminUpdateBookModal
-                        form={form}
-                        formRef={updateFormRef}
-                        currentData={rowSelected}
-                    /> */}
-                </Modal>
             </div>
         </ConfigProvider>
     );

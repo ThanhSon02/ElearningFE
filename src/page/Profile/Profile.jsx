@@ -1,11 +1,7 @@
 import { Tabs, Breadcrumb } from "antd";
 import ProfileContent from "../../components/ProfileContent/ProfileContent";
-import { useSelector } from "react-redux";
-import { useState } from "react";
 
 function Profile() {
-    const userInfo = useSelector((state) => state.auth?.data?.user);
-
     const items = [
         {
             key: "1",
@@ -14,13 +10,13 @@ function Profile() {
                     Thông tin cá nhân
                 </span>
             ),
-            children: <ProfileContent userInfo={userInfo} />,
+            children: <ProfileContent />,
         },
     ];
 
     return (
         <div className="w-full">
-            <Breadcrumb className="mt-3">
+            <Breadcrumb className="my-3">
                 <Breadcrumb.Item href="/" className="text-base text-black">
                     Trang chủ
                 </Breadcrumb.Item>
@@ -28,8 +24,7 @@ function Profile() {
                     Trang cá nhân
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <h1 className="font-semibold text-3xl my-3">Trang cá nhân</h1>
-            <Tabs className="w-full" size="large" items={items} />
+            <ProfileContent />
         </div>
     );
 }

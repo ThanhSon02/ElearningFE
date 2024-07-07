@@ -1,14 +1,15 @@
 import { Button, ConfigProvider, Flex, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { loginUser } from "../../../redux/Slice/authSlice";
 import { useDispatch } from "react-redux";
+import { loginAdminUser } from "../../../redux/Slice/adminSlice";
+import { ToastContainer } from "react-toastify";
 function LoginAdmin() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleLogin = (loginRequest) => {
-        dispatch(loginUser({ loginRequest, navigate, type: "2" }));
+        dispatch(loginAdminUser({ loginRequest, navigate, type: "2" }));
     };
 
     return (
@@ -88,6 +89,19 @@ function LoginAdmin() {
                         </Form.Item>
                     </Form>
                 </Flex>
+                <ToastContainer
+                    position="bottom-left"
+                    autoClose={3000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                    transition:Bounce
+                />
             </div>
         </ConfigProvider>
     );

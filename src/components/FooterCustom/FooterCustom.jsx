@@ -11,11 +11,15 @@ function FooterCustom() {
     return (
         <Footer
             style={{
+                zIndex: 10,
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
                 backgroundColor: "#212121",
                 paddingTop: 20,
                 paddingBottom: 30,
             }}>
-            <Flex justify="space-between">
+            <Flex justify="space-between" className="w-full">
                 <div>
                     <h3 className="font-bold text-sm uppercase text-[#ba955f]">
                         Về chúng tôi

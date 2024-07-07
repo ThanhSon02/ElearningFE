@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/Slice/authSlice";
-import { Button, ConfigProvider, Flex, Form, Input } from "antd";
+import { Button, Flex, Form, Input } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 function Login() {
     const dispatch = useDispatch();
@@ -12,32 +12,20 @@ function Login() {
         dispatch(loginUser({ loginRequest, navigate, type: "1" }));
     };
 
+    const [loginForm] = Form.useForm();
+
     return (
-        <ConfigProvider
-            theme={{
-                components: {
-                    Button: {
-                        colorBgContainer: "#FCCF00",
-                        defaultHoverBorderColor: "#FCCF00",
-                        textHoverBg: "#000",
-                        fontWeight: 500,
-                        defaultHoverColor: "#000",
-                    },
-                    Input: {
-                        activeBorderColor: "#FCCF00",
-                        hoverBorderColor: "#FCCF00",
-                    },
-                },
-            }}>
-            <Flex
-                justify="center"
-                align="center"
-                style={{ paddingTop: 20, paddingBottom: 20, width: 400 }}>
+        <Flex justify="center" align="start" className="w-full h-full">
+            <div className="bg-white rounded-lg w-[500px] flex flex-col justify-center items-center shadow-lg mt-[100px]">
+                <h2 className="text-xl font-semibold my-6">
+                    Đăng nhập vào <span>StudyWorld</span>
+                </h2>
                 <Form
+                    form={loginForm}
                     name="normal_login"
                     className="login-form"
                     layout="vertical"
-                    style={{ width: "100%" }}
+                    style={{ width: "80%" }}
                     initialValues={{
                         remember: true,
                     }}
@@ -49,7 +37,7 @@ function Login() {
                             {
                                 required: true,
                                 type: "email",
-                                message: "The input is not valid Email",
+                                message: "Email không được để trống",
                             },
                         ]}>
                         <Input
@@ -64,7 +52,7 @@ function Login() {
                         rules={[
                             {
                                 required: true,
-                                message: "Please input your Password!",
+                                message: "Mật khẩu không được để trống",
                             },
                         ]}>
                         <Input.Password
@@ -77,23 +65,22 @@ function Login() {
 
                     <Form.Item>
                         <Button
+                            // onClick={loginForm.submit}
                             htmlType="submit"
-                            style={{
-                                width: "100%",
-                                backgroundColor: "#FCCF00",
-                            }}>
+                            type="primary"
+                            className="w-full mb-3 uppercase font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                             Đăng nhập
                         </Button>
                         hoặc{" "}
                         <Link
                             to={"/register"}
-                            className="ml-1 text-amber-700 font-medium">
+                            className="ml-1 text-stone-400 font-medium">
                             Đăng ký ngay!
                         </Link>
                     </Form.Item>
                 </Form>
-            </Flex>
-        </ConfigProvider>
+            </div>
+        </Flex>
     );
 }
 
